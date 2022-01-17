@@ -37,3 +37,5 @@ Route::get('/news/{id}', [NewsController::class, 'show'])
 
 
 
+//category
+
