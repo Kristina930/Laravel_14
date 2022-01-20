@@ -23,6 +23,7 @@ Route::get('/', function () {
 //news
 
 Route::group(['as' => 'admin.', 'prefix' => 'admin'], function (){
+    Route::view('/', 'admin.index')->name('index');
     Route::resource('/categories', AdminCategoryController::class);
     Route::resource('/news', AdminNewsController::class);
 });
@@ -37,5 +38,4 @@ Route::get('/news/{id}', [NewsController::class, 'show'])
 
 
 
-//category
 

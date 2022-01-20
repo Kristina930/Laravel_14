@@ -12,7 +12,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function getNews(?int $id = null): array
+    public function getNews(int $id = null): array
     {
         $faker = Factory::create();
         $news = [];

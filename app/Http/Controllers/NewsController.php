@@ -9,6 +9,7 @@ class NewsController extends Controller
     public function index()
     {
         $news = $this->getNews();
+       // $news = [];
 
         return view('news.index', [
             'newsList' => $news
