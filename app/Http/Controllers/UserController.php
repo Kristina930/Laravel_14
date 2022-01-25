@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +13,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('admin.categories.index');
+        return view('admin.user.index');
     }
 
     /**
@@ -24,7 +23,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.categories.create');
+        return view('admin.user.create');
     }
 
     /**
@@ -36,13 +35,13 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => ['required', 'string', 'min:5']
+            'title' => ['required', 'min:5']
         ]);
 
+        file_put_contents(public_path('/news/data.json'), json_encode($request->all()));
 
         return response()->json($request->all(), 201);
     }
-
 
     /**
      * Display the specified resource.
@@ -52,7 +51,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        return "Отобразить категорию";
+        //
     }
 
     /**

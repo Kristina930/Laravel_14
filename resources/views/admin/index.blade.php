@@ -8,6 +8,11 @@
     </div>
 @endsection
 @section('content')
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            <x-alert type="danger" :message="$error"></x-alert>
+        @endforeach
+    @endif
     <div class="table-responsive">
         Панель администратора
         @php
