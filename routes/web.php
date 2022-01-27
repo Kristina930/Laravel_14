@@ -24,7 +24,8 @@ Route::get('/', function () {
 
 //news
 
-Route::group(['as' => 'admin.', 'prefix' => 'admin'], function (){
+Route::group(['as' => 'admin.', 'prefix' => 'admin'], function ()
+{
     Route::view('/', 'admin.index')->name('index');
     Route::resource('/categories', AdminCategoryController::class);
     Route::resource('/news', AdminNewsController::class);
@@ -33,12 +34,27 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin'], function (){
 });
 
 
-Route::get('/news', [NewsController::class, 'index'])
+Route::get('/newsList', [NewsController::class, 'index'])
     ->name('news.index');
 
 Route::get('/news/{id}', [NewsController::class, 'show'])
     ->where('id', '\d+')
     ->name('news.show');
+
+Route::get('sql', function ()
+{
+    dump(
+
+        \DB::table('news')
+            //->where('id', '>', 5)
+            ->where([
+                ['title', 'like', '%'. request()->get('q'). '%'],
+                ['id', '<', 10]
+            ])
+            ->orWhere('author', '=', 'Admin')
+            ->get()
+    );
+});
 
 
 
