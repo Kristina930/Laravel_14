@@ -9,5 +9,7 @@ class Cetegory extends Model
 {
     use HasFactory;
 
+    protected $table = "categories";
 
+    public static $availableFields = ['id','title', 'author', 'status', 'description', 'created_at'];
 }
