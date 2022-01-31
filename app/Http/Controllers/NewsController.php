@@ -9,41 +9,16 @@ class NewsController extends Controller
 {
     public function index()
     {
-
-        dd(
-           /* выводит пустой массив items
-           \DB::table('news')
-                ->join('categories_has_news as chn', 'news.id', '=', 'chn.news_id')
-                ->join('categories', 'chn.category_id', '=', 'categories.id')
-                ->select('news.*', 'categories.title as categoriesTitle')
-                ->get()*/
-
-
-        \DB::table('news')
-            ->where('id', '>', 5)
-            ->get()
-        );
-
-
-        $news = new News();
-        $news = $this->getNews();
-       //$news = [];
-
+        $news = News::query()->select(News::$availableFields)->get();
         return view('news.index', [
             'newsList' => $news
         ]);
     }
 
-    public function show(int $id)
+    public function show(News $news)
     {
-        $news = new News();
-        $news = $this->getNewsById($id);
-
-
         return view('news.show', [
             'news' => $news
         ]);
     }
-
-
 }

@@ -14,8 +14,14 @@ class CreateOrderTable extends Migration
     public function up()
     {
         Schema::create('order', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+            $table->unsignedBigInteger('news_id');
+            $table->foreign('news_id')
+                ->references('id')
+                ->on('news')
+                ->cascadeOnDelete();
         });
     }
 

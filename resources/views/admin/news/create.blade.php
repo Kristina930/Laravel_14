@@ -7,16 +7,19 @@
     </div>
 @endsection
 @section('content')
-    @if($errors->any())
-        @foreach($errors->all() as $error)
-            <x-alert type="danger" :message="$error"></x-alert>
-        @endforeach
-    @endif
-
+@include('inc.message')
     <form method="post" action="{{ route('admin.news.store') }}">
         @csrf
         <div class="form-group">
-            <label for="title">Наименования</label>
+            <label for="categories">Выбрать категории</label>
+            <select class="form-control" name="categories[]" id="categories" multiple>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->title }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="title">Наименование</label>
             <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
         </div>
         <div class="form-group">

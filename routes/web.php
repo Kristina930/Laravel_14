@@ -34,17 +34,20 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin'], function ()
 });
 
 
-Route::get('/newsList', [NewsController::class, 'index'])
+Route::get('/news', [NewsController::class, 'index'])
     ->name('news.index');
 
-Route::get('/news/{id}', [NewsController::class, 'show'])
-    ->where('id', '\d+')
+/*После того как мы изменили newsList на '/news/{news}' главная страница выдает ошибку
+Missing required parameter for [Route: news.show] [URI: news/{news}] [Missing parameter: news]. (View: /var/www/html/resources/views/news/index.blade.php)
+*/
+Route::get('/news/{news}', [NewsController::class, 'show'])
+    ->where('news', '\d+')
     ->name('news.show');
+
 
 Route::get('sql', function ()
 {
     dump(
-
         \DB::table('news')
             //->where('id', '>', 5)
             ->where([
@@ -56,6 +59,32 @@ Route::get('sql', function ()
     );
 });
 
+Route::get('/collection', function ()
+{
+    $arr = [
+        1,5,3,4,6,19,10
+    ];
+    $arr2 = [
+       'names' => [
+           'Ann', 'Kris', 'Bill', 'Mike', 'Joly'
+       ],
+
+        'ages' => [
+            20, 35, 15, 31, 26
+        ]
+    ];
+
+    $collection = collect($arr);
+    $collection2 = collect($arr2);
+
+    //dd($collection->count());
+    dd($collection->map(function ($item) {
+        return $item * 2;
+    })->sort(function ($sort) {
+        return $sort % 3;
+    })->all()
+    );
+});
 
 
 

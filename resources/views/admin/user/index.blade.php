@@ -11,6 +11,31 @@
 @endsection
 @section('content')
     <div class="table-responsive">
-        Список отзывов / комментариев
+        @include('inc.message')
+        <table class="table-bordered">
+            <thead>
+            <tr>
+                <th>#ID</th>
+                <th>Имя</th>
+                <th>Email</th>
+                <th>Номер телефона</th>
+                <th>Комментарии/отзывы</th>
+                <th>Дата добавления</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($users as $user)
+                <tr>
+                    <td>{{ $user->name }}</td>
+                    <td>{{ $user->email }}</td>
+                    <td>{{ $user->password }}</td>
+                    <td>{{ $user->phone_numbers }}</td>
+                    <td>{{ $user->email }}</td>
+                </tr>
+                <td><a href="{{--почему-то выдает ошибку данный роут, в БД все сохраняется, но в браузере ошибка  {{ route('admin.news.edit') }}--}}">Ред.</a> &nbsp; <a href="">Уд.</a></td>
+            @endforeach
+            </tbody>
+        </table>
+        <div style="margin: 20px">{{ $newsList->links() }}</div>
     </div>
 @endsection

@@ -20,7 +20,15 @@
             <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
         </div>
         <div class="form-group">
-            <label for="title">Отзывы или комментарии</label>
+            <label for="email">Номер телефона</label>
+            <input type="telephone" class="form-control" id="telephone" name="telephone" value="{{ old('phone_numbers') }}">
+        </div>
+        <div class="form-group">
+            <label for="email">Ведите Ваш Email</label>
+            <input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}">
+        </div>
+        <div class="form-group">
+            <label for="title">Информация о заказе</label>
             <textarea class="form-control" id="description" name="description">{{ old('description') }}</textarea>
         </div>
         <br>

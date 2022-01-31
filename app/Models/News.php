@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class News extends Model
 {
@@ -11,21 +12,18 @@ class News extends Model
 
     protected $table = "news";
 
-    protected  $availableFields = ['id','title', 'author', 'status', 'description', 'created_at'];
+    public static $availableFields = ['id','title', 'author', 'status', 'description', 'created_at'];
 
+    protected $fillable = [
+        'title',
+        'slug',
+        'author',
+        'status',
+        'description'
+    ];
 
-    public function getNews(): array
-    {
-        return \DB::table($this->table)->select(['id','title', 'author', 'status', 'description', 'created_at'])
-            ->select($this->availableFields)
-            ->get()
-            ->toArray();
-
-    }
-
-    public function getNewsById($id)
-    {
-        return \DB::table($this->table)->find($id, $this->availableFields);
-    }
-
+   public  function categories(): BelongsToMany
+   {
+       return $this->belongsToMany(Category::class, 'categories_has_news');
+   }
 }

@@ -15,24 +15,15 @@
 
     <form method="post" action="{{ route('admin.order.store') }}">
         @csrf
-        <div class="form-group">
-            <label for="title">Введите имя</label>
-            <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
-        </div>
-        <div class="form-group">
-            <label for="email">Номер телефона</label>
-            <input type="telephone" class="form-control" id="telephone" name="telephone" value="{{ old('email') }}">
-        </div>
-        <div class="form-group">
-            <label for="email">Ведите Ваш Email</label>
-            <input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}">
-        </div>
-        <div class="form-group">
-            <label for="title">Информация о заказе</label>
-            <textarea class="form-control" id="description" name="description">{{ old('description') }}</textarea>
-        </div>
-        <br>
-        <button type="submit" class="btn btn-success" style="float: right">Сохранить</button>
-    </form>
+    <div class="form-group">
+        <label for="title">Введите имя</label>
+        <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
+    </div>
+    <div class="form-group">
+        <label for="title">Отзывы или комментарии</label>
+        <textarea class="form-control" id="description" name="description">{{ old('description') }}</textarea>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-success" style="float: right">Сохранить</button>
 @endsection
 

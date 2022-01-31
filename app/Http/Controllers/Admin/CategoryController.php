@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\News;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -14,7 +16,12 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('admin.categories.index');
+        $categories = Category::with('categories')->paginate(4);
+        //$categories = Category::all();
+
+        return view('admin.categories.index', [
+            'categories' => $categories
+        ]);
     }
 
     /**
@@ -24,7 +31,10 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.categories.create');
+        $news = News::all();
+        return view('admin.categories.create', [
+            'news' => $news,
+        ]);
     }
 
     /**
@@ -39,8 +49,22 @@ class CategoryController extends Controller
             'title' => ['required', 'string', 'min:5']
         ]);
 
+        $data = $request->only(['title', 'description' ]) + [
+                'slug' => \Str::slug($request->input('title'))
+            ];
 
-        return response()->json($request->all(), 201);
+       // return response()->json($request->all(), 201);
+
+      $created = Category::create($data);
+        if($created) {
+            //foreach ($request->input('categories') as $category) {
+            $created->categories()->attach($request->input('news'));
+            //}
+            return redirect()->route('admin.categories.index')
+                ->with('success', 'Запись успешно добавлена');
+        }
+        return back()->with('error', 'Запись не добавилась')
+            ->withInput();
     }
 
 
@@ -63,7 +87,18 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $news = News::all();
+        $selectNews = \DB::table('categories_has_news')
+            ->where('categories_id', $news->id)
+            ->get()
+            ->map(fn($item) => $item->categories_id)
+            ->toArray();
+
+        return view('admin.categories.edit', [
+            'news' => $news,
+            'categories' => $news,
+            'selectNews' => $selectNews
+        ]);
     }
 
     /**
@@ -75,7 +110,35 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'title' => ['required', 'string', 'min:5']
+        ]);
+
+        $data = $request->only(['title', 'description']) + [
+                'slug' => \Str::slug($request->input('title'))
+            ];
+
+
+        $updated = $categories->fill($data)->save();
+
+        if($updated) {
+
+            \DB::table('categories_has_news')
+                ->where('categories_id', $categories->id)
+                ->delete();
+
+            foreach ($request->input('news') as $news) {
+                \DB::table('categories_has_news')
+                    ->insert([
+                        'news_id' => intval($news),
+                        'categories_id' => $categories->id
+                    ]);
+            }
+            return redirect()->route('admin.categories.index')
+                ->with('success', 'Запись успешно добавлена');
+        }
+        return back()->with('error', 'Запись не обновилась')
+            ->withInput();
     }
 
     /**
