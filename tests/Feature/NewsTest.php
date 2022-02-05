@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\News;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -24,7 +25,8 @@ class NewsTest extends TestCase
     //Показывает 27 ошибку в данном тесте, а именно вся функция неработает
       public function testShow()
     {
-        $response = $this->get(route('news.show', ['id' => mt_rand(0,4)]));
+        $news = News::factory()->create();
+        $response = $this->get(route('news.show', ['news' => $news]));
 
         $response->assertStatus(200);
     }

@@ -13,15 +13,18 @@
         @method('put')
         <div class="form-group">
             <label for="title">Введите имя</label>
-            <input type="text" class="form-control" id="title" name="title" value="{{ $user->title }}">
+            <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}">
+            @error('name') <strong style="color: brown">{{ $message }}</strong>  @enderror
         </div>
         <div class="form-group">
             <label for="email">Номер телефона</label>
-            <input type="telephone" class="form-control" id="telephone" name="telephone" value="{{ $user->phone_numbers }}">
+            <input type="tel" class="form-control" id="phone" name="phone" value="{{ $user->phone}}">
+            @error('phone') <strong style="color: brown">{{ $message }}</strong>  @enderror
         </div>
         <div class="form-group">
             <label for="email">Ведите Ваш Email</label>
             <input type="text" class="form-control" id="email" name="email" value="{{ $user->password }}">
+            @error('email') <strong style="color: brown">{{ $message }}</strong>  @enderror
         </div>
         <div class="form-group">
             <label for="title">Информация о заказе</label>

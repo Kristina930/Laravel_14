@@ -25,7 +25,8 @@
                     <td>{{ $category->id }}</td>
                     <td>{{ $category->title }}</td>
                 </tr>
-                <td><a href="{{--почему-то выдает ошибку данный роут, в БД все сохраняется, но в браузере ошибка  {{ route('admin.categories.edit') }}--}}">Ред.</a> &nbsp; <a href="">Уд.</a></td>
+                <!-- Не работает ссылка на редактирование, не знаю что уже делать-->
+                <td><a href="<td><a href="{{ route('admin.categories.edit', ['categories' => $category]) }}">Ред.</a> &nbsp;<a href="">Уд.</a></td>
             @endforeach
             </tbody>
         </table>

@@ -42,9 +42,20 @@ services:
             test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
             retries: 3
             timeout: 5s
+    selenium:
+            image: 'selenium/standalone-chrome'
+            volumes:
+                - '/dev/shm:/dev/shm'
+            networks:
+                - sail
+            depends_on:
+                - mysql
+                - redis
+                - selenium
 networks:
     sail:
         driver: bridge
 volumes:
     sail-mysql:
         driver: local
+

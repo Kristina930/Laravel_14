@@ -1,5 +1,4 @@
 @extends('layouts.admin')
-
 @section('header')
     <h1 class="h2">Список новостей</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
@@ -32,13 +31,14 @@
                        @foreach($news->categories as $category)
                            {{ $category->title }},
                        @endforeach
-
                    </td>
                    <td>{{ $news->author }}</td>
                    <td>{{ $news->status }}</td>
                    <td>{{ $news->created_at }}</td>
                </tr>
-            <td><a href="{{--почему-то выдает ошибку данный роут, в БД все сохраняется, но в браузере ошибка  {{ route('admin.news.edit') }}--}}">Ред.</a> &nbsp; <a href="">Уд.</a></td>
+               <!-- Не работает ссылка на редактирование, не знаю что уже делать-->
+            <td><a href="<td><a href="{{ route('admin.news.edit', ['news' => $news]) }}">Ред.</a> &nbsp;
+                <a href="javascript:;" class="delete" rel="{{ $news->id }}">Уд.</a></td>
            @endforeach
            </tbody>
        </table>
@@ -46,3 +46,32 @@
     </div>
 @endsection
 
+@push('js')
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const el = document.querySelectorAll(".delete");
+            el.forEach(function (e, k) {
+                e.addEventListener('click', function () {
+                    const id = this.getAttribute('rel');
+                    if (confirm('Подтвердить удаление новости с #ID ${id} ?')) {
+                        send('/admin/news/' + id).then(() => {
+                            location.reload();
+                        })
+                    }
+                });
+            });
+        });
+
+        async function send(url) {
+            let response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                        'X-CSRF-TOKEN': document.querySelector(('meta[name="csrf-token"]') .getAttribute('content'))
+                    }
+                });
+
+            let result = await response.json();
+            return result.ok;
+        }
+    </script>
+@endpush

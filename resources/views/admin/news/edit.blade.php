@@ -1,5 +1,4 @@
 @extends('layouts.admin')
-
 @section('header')
     <h1 class="h2">Редактировать запись</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
@@ -24,10 +23,12 @@
         <div class="form-group">
             <label for="title">Наименование</label>
             <input type="text" class="form-control" id="title" name="title" value="{{ $news->title }}">
+            @error('title') <strong style="color: brown">{{ $message }}</strong>  @enderror
         </div>
         <div class="form-group">
             <label for="author">Автор</label>
             <input type="text" class="form-control" id="author" name="author" value="{{ $news->author }}">
+            @error('author') <strong style="color: brown">{{ $message }}</strong>  @enderror
         </div>
         <div class="form-group">
             <label for="status">Статус</label>
@@ -39,7 +40,7 @@
         </div>
         <div class="form-group">
             <label for="title">Описание</label>
-            <textarea class="form-control" id="description" name="description">{{ $news->description }}</textarea>
+            <textarea class="form-control" id="description" name="description">{!! $news->description !!}</textarea>
         </div>
         <br>
         <button type="submit" class="btn btn-success" style="float: right">Сохранить</button>

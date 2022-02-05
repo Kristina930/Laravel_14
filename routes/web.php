@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
@@ -43,6 +44,9 @@ Missing required parameter for [Route: news.show] [URI: news/{news}] [Missing pa
 Route::get('/news/{news}', [NewsController::class, 'show'])
     ->where('news', '\d+')
     ->name('news.show');
+Route::get('/categories/{categories}', [CategoryController::class, 'show'])
+    ->where('categories', '\d+')
+    ->name('categories.show');
 
 
 Route::get('sql', function ()

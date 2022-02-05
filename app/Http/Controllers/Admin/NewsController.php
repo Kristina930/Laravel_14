@@ -3,21 +3,26 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\News\CreateRequest;
+use App\Http\Requests\News\EditRequest;
+use App\Http\Requests\News\UpdateRequest;
+use App\Models\Category;
 use App\Models\News;
 use Illuminate\Http\Request;
-use App\Models\Category;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class NewsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        /*Почему-то талица categories_has_news в Воркбенч, когда я вношу данные вручную они не сохраняються там.
-         При выводе категорий с БД показывает пусто. */
 
       //$news = News::whereHas('categories')->with('categories')->paginate(5);
         $news = News::with('categories')->paginate(5);
@@ -35,7 +40,7 @@ class NewsController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.news.create',[
+        return view('admin.news.create', [
             'categories' => $categories
         ]);
     }
@@ -43,36 +48,33 @@ class NewsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => ['required', 'string', 'min:5']
-        ]);
 
-        $data = $request->only(['title', 'author', 'status', 'description']) +[
-            'slug' => \Str::slug($request->input('title'))
+     * @param CreateRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(CreateRequest $request)
+    {
+
+        $data = $request->validate() +[
+            'slug' => Str::slug($request->input('title'))
             ];
 
         $created = News::create($data);
         if($created) {
-            //foreach ($request->input('categories') as $category) {
                $created->categories()->attach($request->input('categories'));
-            //}
+
             return redirect()->route('admin.news.index')
-                ->with('success', 'Запись успешно добавлена');
+                ->with('success', trans('messages.admin.news.created.success'));
         }
-        return back()->with('error', 'Запись не добавилась')
-            ->withInput();
+            return back()->with('error', trans('messages.admin.news.created.error'))
+                 ->withInput();
     }
 
     /**
      * Display the specified resource.
      *
      * @param  News $news
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(News $news)
     {
@@ -88,55 +90,45 @@ class NewsController extends Controller
     public function edit(News $news)
     {
         $categories = Category::all();
-        $selectCategories = \DB::table('categories_has_news')
-        ->where('news_id', $news->id)
-            ->get()
-            ->map(fn($item) => $item->category_id)
-            ->toArray();
-
         return view('admin.news.edit', [
             'news' => $news,
-            'categories' => $categories,
-            'selectCategories' => $selectCategories
+            'categories' => $categories
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  News $news
-     * @return \Illuminate\Http\Response
+     * @param UpdateRequest $request
+     * @param News $news
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, News $news)
+    public function update(UpdateRequest $request, News $news)
     {
-        $request->validate([
-            'title' => ['required', 'string', 'min:5']
-        ]);
 
-        $data = $request->only(['title', 'author', 'status', 'description']) + [
-                'slug' => \Str::slug($request->input('title'))
+        $data = $request->validate() + [
+                'slug' => Str::slug($request->input('title'))
             ];
 
        $updated = $news->fill($data)->save();
 
        if($updated) {
 
-           \DB::table('categories_has_news')
+           DB::table('categories_has_news')
                ->where('news_id', $news->id)
                ->delete();
 
            foreach ($request->input('categories') as $category) {
-               \DB::table('categories_has_news')
+               DB::table('categories_has_news')
                    ->insert([
                        'category_id' => intval($category),
                        'news_id' => $news->id
                    ]);
            }
            return redirect()->route('admin.news.index')
-               ->with('success', 'Запись успешно добавлена');
+               ->with('success', trans('messages.admin.news.update.success'));
        }
-        return back()->with('error', 'Запись не обновилась')
+        return back()->with('error', trans('messages.admin.news.update.error'))
             ->withInput();
 
     }
@@ -145,10 +137,18 @@ class NewsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param News $news
-     * @return \Illuminate\Http\Response
+     * @param $e
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(News $news)
+    public function destroy(News $news, $e)
     {
-        //
+        try {
+            $news->delete();
+            return response()->json('ok');
+
+        }catch (\Exception $exception) {
+            Log::error('News error destroy', $e);
+            return response()->json('error', 400);
+        }
     }
 }

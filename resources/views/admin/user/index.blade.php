@@ -31,8 +31,8 @@
                     <td>{{ $user->password }}</td>
                     <td>{{ $user->phone_numbers }}</td>
                     <td>{{ $user->email }}</td>
-                </tr>
-                <td><a href="{{--почему-то выдает ошибку данный роут, в БД все сохраняется, но в браузере ошибка  {{ route('admin.news.edit') }}--}}">Ред.</a> &nbsp; <a href="">Уд.</a></td>
+                    <!-- Не работает ссылка на редактирование, не знаю что уже делать-->
+                    <td><a href="<td><a href="{{ route('admin.user.edit', ['user' => $user]) }}">Ред.</a> &nbsp;<a href="">Уд.</a></td>
             @endforeach
             </tbody>
         </table>
