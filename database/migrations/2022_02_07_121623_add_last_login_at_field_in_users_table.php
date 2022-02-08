@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFeedbackDataTable extends Migration
+class AddLastLoginAtFieldInUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateFeedbackDataTable extends Migration
      */
     public function up()
     {
-        Schema::create('feedback_data', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->dateTime('last_login_at')->nullable();
+            $table->boolean('is_admin')->default(false);
         });
     }
 
@@ -26,6 +26,8 @@ class CreateFeedbackDataTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('feedback_data');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['last_login_at', 'is_admin']);
+        });
     }
 }
