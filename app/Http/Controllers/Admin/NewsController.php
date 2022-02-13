@@ -8,6 +8,7 @@ use App\Http\Requests\News\EditRequest;
 use App\Http\Requests\News\UpdateRequest;
 use App\Models\Category;
 use App\Models\News;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -41,7 +42,7 @@ class NewsController extends Controller
     {
         $categories = Category::all();
         return view('admin.news.create', [
-            'categories' => $categories
+            'categories' => $categories,
         ]);
     }
 
@@ -92,7 +93,7 @@ class NewsController extends Controller
         $categories = Category::all();
         return view('admin.news.edit', [
             'news' => $news,
-            'categories' => $categories
+            'categories' => $categories,
         ]);
     }
 
@@ -140,14 +141,13 @@ class NewsController extends Controller
      * @param $e
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(News $news, $e)
+    public function destroy(News $news)
     {
-        try {
+        try{
             $news->delete();
             return response()->json('ok');
-
-        }catch (\Exception $exception) {
-            Log::error('News error destroy', $e);
+        }catch (\Exception $e) {
+            Log::error('News error destroy', [$e]);
             return response()->json('error', 400);
         }
     }

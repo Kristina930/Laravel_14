@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\News;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -15,10 +17,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('users')->paginate(4);
+        $user = User::with('users')->paginate(4);
 
         return view('admin.user.index', [
-            'users' => $users
+            'users' => $user
         ]);
     }
 
@@ -48,11 +50,9 @@ class UserController extends Controller
         ]);
 
         $data = $request->only(['id','name', 'email', 'password', 'phone_numbers', 'comments' ]) + [
-                'slug' => \Str::slug($request->input('title'))
+                'slug' => Str::slug($request->input('title'))
             ];
 
-
-        //return response()->json($request->all(), 201);
         $created = User::create($data);
         if($created) {
             $created->categories()->attach($request->input('users'));
@@ -84,15 +84,15 @@ class UserController extends Controller
     public function edit($id)
     {
         $news = News::all();
-        $selectNews = \DB::table('order')
+        $selectNews = DB::table('order')
             ->where('user_id', $news->id)
             ->get()
-            ->map(fn($item) => $item->users_id)
+            ->map(fn($item) => $item->user_id)
             ->toArray();
 
         return view('admin.user.edit', [
             'news' => $news,
-            'users' => $news,
+            'users' => $user,
             'selectNews' => $selectNews
         ]);
     }
@@ -106,26 +106,22 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'title' => ['required', 'string', 'min:5']
-        ]);
-
         $data = $request->only(['id','name', 'email', 'password', 'phone_numbers', 'comments']) + [
-                'slug' => \Str::slug($request->input('title'))
+                'slug' => Str::slug($request->input('title'))
             ];
 
-        $updated = $users->fill($data)->save();
+        $updated = $user->fill($data)->save();
 
         if($updated) {
 
-            \DB::table('order')
-                ->where('user_id', $users->id)
+            DB::table('order')
+                ->where('user_id', $user->id)
                 ->delete();
 
             foreach ($request->input('news') as $news) {
-                \DB::table('order')
+                DB::table('order')
                     ->insert([
-                        'user_id' => intval($users),
+                        'user_id' => intval($user),
                         'news_id' => $news->id
                     ]);
             }

@@ -8,7 +8,7 @@
 @endsection
 @section('content')
     @include('inc.message')
-    <form method="post" action="{{ route('admin.profile.update') }}">
+    <form method="post" action="{{ route('account.profile.update') }}">
         @csrf
         @include('inc.message')
         <div class="form-group">

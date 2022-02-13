@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-//use Nette\Utils\Paginator;
+use App\Contracts\Parser;
+use App\Contracts\Social;
+use App\QueryBuilders\NewsQueryBuilder;
+use App\Services\ParserService;
+use App\Services\SocialService;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(NewsQueryBuilder::class);
+        $this->app->bind(Parser::class, ParserService::class);
+        $this->app->bind(Social::class, SocialService::class);
     }
 
     /**

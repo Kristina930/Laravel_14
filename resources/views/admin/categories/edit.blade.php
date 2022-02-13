@@ -1,10 +1,8 @@
 @extends('layouts.admin')
-
 @section('header')
     <h1 class="h2">Редактировать запись</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group me-2">
-        </div>
+        <div class="btn-group me-2"></div>
     </div>
 @endsection
 @section('content')
@@ -13,12 +11,11 @@
         @csrf
         @method('put')
         <div class="form-group">
-            <label for="categories">Выбрать категории</label>
+            <label for="categories">Выбрать категорию</label>
             <select class="form-control" name="categories[]" id="categories" multiple>
                 @foreach($categories as $category)
-                    <option value="{{ $category->id }}" @if(in_array($category->id, $selectCategories)) selected @endif>
-                        {{ $category->title }}
-                    </option>
+                    <option value="{{ $category->id }}"
+                            @if($category->id === $news->category_id) selected @endif>{{ $category->title }}</option>
                 @endforeach
             </select>
         </div>
@@ -46,3 +43,4 @@
     </form>
 
 @endsection
+

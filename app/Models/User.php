@@ -19,7 +19,7 @@ class  User extends Authenticatable
      * @var array<int, string>
      */
 
-    protected $table = "user";
+    protected $table = "users";
 
     public static $availableFields = ['id','name', 'email', 'password', 'phone_numbers', 'comments'];
 
@@ -49,10 +49,7 @@ class  User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_admin' => 'boolean'
     ];
 
-    public  function categories(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'order');
-    }
 }

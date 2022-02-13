@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\News;
+namespace App\Http\Requests\Categories;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,12 +24,8 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'categories'  => ['required', 'array'],
+            'news'  => ['required', 'array'],
             'title'       => ['required', 'string', 'min:5','max:200'],
-            'author'      => ['required', 'string', 'min:2', 'max:50'],
-            'status'      => ['required', 'string', 'min:4', 'max:8'],
-            'isImage'     => ['nullable', 'boolean'],
-            'image'       => ['nullable', 'file', 'image', 'mimes:jpg,png'],
             'description' => ['nullable', 'string'],
         ];
     }
@@ -45,10 +41,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'title' => 'заголовок',
-            'author' => 'автор',
-            'name' => 'имя',
-            'phone' => 'телефон',
-            'email' => 'почта',
+            'categories' => 'категория'
     ];
     }
 }

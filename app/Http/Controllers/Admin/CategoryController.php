@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\News\CreateRequest;
+use App\Http\Requests\News\UpdateRequest;
 use App\Models\Category;
 use App\Models\News;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Exception;
 
 class CategoryController extends Controller
 {
@@ -37,30 +41,24 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
+     * @param CreateRequest $request
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request)
     {
-        $request->validate([
-            'title' => ['required', 'string', 'min:5']
-        ]);
-
-        $data = $request->only(['title', 'description' ]) + [
+        $data = $request->validate() +[
                 'slug' => Str::slug($request->input('title'))
             ];
 
-       // return response()->json($request->all(), 201);
-
-      $created = Category::create($data);
+        $created = Category::create($data);
         if($created) {
-            //foreach ($request->input('categories') as $category) {
-            $created->categories()->attach($request->input('news'));
-            //}
-            return redirect()->route('admin.categories.index')
-                ->with('success', 'Запись успешно добавлена');
+            $created->categories()->attach($request->input('categories'));
+
+            return redirect()->route('admin.news.index')
+                ->with('success', trans('messages.admin.categories.created.success'));
         }
-        return back()->with('error', 'Запись не добавилась')
+        return back()->with('error', trans('messages.admin.categories.created.error'))
             ->withInput();
     }
 
@@ -68,10 +66,10 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Category $categories
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Category $categories)
     {
         return "Отобразить категорию";
     }
@@ -79,42 +77,30 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  Category $categories
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $categories)
     {
         $news = News::all();
-        $selectNews = DB::table('categories_has_news')
-            ->where('categories_id', $news->id)
-            ->get()
-            ->map(fn($item) => $item->categories_id)
-            ->toArray();
-
         return view('admin.categories.edit', [
+            'categories' => $categories,
             'news' => $news,
-            'categories' => $news,
-            'selectNews' => $selectNews
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  UpdateRequest  $request
+     * @param  Category $categories
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, Category $categories)
     {
-        $request->validate([
-            'title' => ['required', 'string', 'min:5']
-        ]);
-
-        $data = $request->only(['title', 'description']) + [
+        $data = $request->validate() + [
                 'slug' => Str::slug($request->input('title'))
             ];
-
 
         $updated = $categories->fill($data)->save();
 
@@ -128,24 +114,31 @@ class CategoryController extends Controller
                 DB::table('categories_has_news')
                     ->insert([
                         'news_id' => intval($news),
-                        'categories_id' => $categories->id
+                        'category_id' => $categories->id
                     ]);
             }
             return redirect()->route('admin.categories.index')
-                ->with('success', 'Запись успешно добавлена');
+                ->with('success', trans('messages.admin.categories.update.success'));
         }
-        return back()->with('error', 'Запись не обновилась')
+        return back()->with('error', trans('messages.admin.categories.update.error'))
             ->withInput();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  Category $categories
+     * @param $e
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Category $categories)
     {
-        //
+        try{
+            $categories->delete();
+            return response()->json('ok');
+        }catch (\Exception $e) {
+            Log::error('News error destroy', [$e]);
+            return response()->json('error', 400);
+        }
     }
 }

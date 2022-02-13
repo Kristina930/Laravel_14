@@ -46,9 +46,7 @@ class UpdateRequest extends FormRequest
         return [
             'title' => 'заголовок',
             'author' => 'автор',
-            'name' => 'имя',
-            'phone' => 'телефон',
-            'email' => 'почта',
-    ];
+            'categories' => 'категория'
+        ];
     }
 }
