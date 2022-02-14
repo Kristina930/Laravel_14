@@ -31,6 +31,9 @@ Route::get('/', function () {
 
 Route::group(['middleware' => 'auth'], function()
 {
+    Route::match(['post', 'get'], '/update', ProfileController::class)
+        ->name('account.profile.update');
+
     Route::get('/account', AccountController::class)
         ->name('account');
 
@@ -39,9 +42,6 @@ Route::group(['middleware' => 'auth'], function()
         Auth::logout();
         return redirect()->route('login');
     })->name('account.logout');
-
-    Route::match(['post', 'get'], '/update', ProfileController::class)
-        ->name('account.profile.update');
 
     Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], function()
     {
@@ -113,8 +113,6 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-
-
 Route::group(['middleware' => 'guest'], function() {
     Route::get('auth/{network}/redirect', [SocialController::class, 'redirect'])
         ->where('network', '\w+')
@@ -123,3 +121,5 @@ Route::group(['middleware' => 'guest'], function() {
         ->where('network', '\w+')
         ->name('auth.callback');
 });
+
+

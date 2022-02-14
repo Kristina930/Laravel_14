@@ -5,15 +5,16 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.0",
+        "php": "^8.0.",
         "ext-xml": "*",
+        "cviebrock/eloquent-sluggable": "^8.0",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
-        "orchestra/parser": "6.1",
+        "orchestra/parser": "^6.1",
         "socialiteproviders/github": "^4.1",
         "socialiteproviders/vkontakte": "^4.2",
         "socialiteproviders/zoho": "^4.1"

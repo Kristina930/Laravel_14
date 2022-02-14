@@ -36,7 +36,8 @@
                     <td>{{ $news->author }}</td>
                     <td>{{ $news->status }}</td>
                     <td>{{ $news->created_at }}</td>
-                    <td><a href="{{ route('admin.news.edit', ['news' => $news]) }}">Ред.</a> &nbsp;
+                    <td>
+                    <a href="<td><a href="{{ route('admin.user.edit', ['users' => $user]) }}">Ред.</a>
                         <a href="javascript:;" class="delete" rel="{{ $news->id }}">Уд.</a>
                     </td>
                 </tr>

@@ -27,9 +27,8 @@
                     <td>{{ $category->id }}</td>
                     <td>{{ $category->title }}</td>
                     <td>{{ $category->description }}</td>
-                    <td>
-                        <a href="{{ route('admin.categories.edit', ['category' => $category]) }}">Ред.</a> &nbsp;
-                        <a href="javascript:;" style="color:red;">Уд.</a>
+                    <a href="<td><a href="{{ route('admin.categories.edit', ['users' => $user]) }}">Ред.</a>
+                    <a href="">Уд.</a>
                     </td>
                 </tr>
             @empty

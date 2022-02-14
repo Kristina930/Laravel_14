@@ -9,6 +9,7 @@ use App\Http\Requests\News\UpdateRequest;
 use App\Models\Category;
 use App\Models\News;
 use App\Models\Order;
+use App\Services\UploadService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -55,12 +56,7 @@ class NewsController extends Controller
      */
     public function store(CreateRequest $request)
     {
-
-        $data = $request->validate() +[
-            'slug' => Str::slug($request->input('title'))
-            ];
-
-        $created = News::create($data);
+        $created = News::create($request->validate());
         if($created) {
                $created->categories()->attach($request->input('categories'));
 
@@ -106,26 +102,19 @@ class NewsController extends Controller
      */
     public function update(UpdateRequest $request, News $news)
     {
+        $validate = $request->validate();
+        if($request->hasFile('image')) {
 
-        $data = $request->validate() + [
-                'slug' => Str::slug($request->input('title'))
-            ];
+            $validate['image'] = app(UploadService::class)->saveFile(
+                $request->file('image')
+            );
+        }
 
-       $updated = $news->fill($data)->save();
-
+       $updated = $news->fill($validate)->save();
        if($updated) {
+           $news->categories()->detach();
+           $news->categories()->attach($request->input('categories'));
 
-           DB::table('categories_has_news')
-               ->where('news_id', $news->id)
-               ->delete();
-
-           foreach ($request->input('categories') as $category) {
-               DB::table('categories_has_news')
-                   ->insert([
-                       'category_id' => intval($category),
-                       'news_id' => $news->id
-                   ]);
-           }
            return redirect()->route('admin.news.index')
                ->with('success', trans('messages.admin.news.update.success'));
        }

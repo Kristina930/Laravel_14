@@ -16,11 +16,10 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<class-string, array<int, class-string>>
      */
-    //Через запятую мы добавляем слушателей, связка 3
-
     /**
-     * @var \string[][]
+     * @var string[][]
      */
+    //Через запятую мы добавляем слушателей, связка 3
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
