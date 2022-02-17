@@ -12,11 +12,11 @@ class Order
 
     protected $table = "order";
 
-    public static $availableFields = ['id','user_id', 'user_id'];
+    public static $availableFields = ['id','user_id', 'news_id'];
 
     protected $fillable = [
         'user_id',
-        'user_id',
+        'news_id',
     ];
 
 }

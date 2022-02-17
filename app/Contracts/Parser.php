@@ -11,7 +11,7 @@ interface Parser
      * @return $this
      */
 
-    //Метод устанавливает ссылку и возвращает сам себя
+    //Метод устанавливает ссылку и возвращает объект текущего класса
     public function setLink(string $link): self;
 
     /**

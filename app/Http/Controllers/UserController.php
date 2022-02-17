@@ -121,7 +121,7 @@ class UserController extends Controller
             foreach ($request->input('news') as $news) {
                 DB::table('order')
                     ->insert([
-                        'user_id' => intval($user),
+                        'user_id' => intval($user->id),
                         'news_id' => $news->id
                     ]);
             }
